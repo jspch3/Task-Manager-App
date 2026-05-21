@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Modern Task Manager</title>
+
+
+
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body{
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      background: linear-gradient(135deg,#667eea,#764ba2);
+      padding:20px;
+    }
+
+    .container{
+      width:100%;
+      max-width:500px;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+      border:1px solid rgba(255,255,255,0.2);
+      padding:30px;
+      border-radius:25px;
+      box-shadow:0 8px 25px rgba(0,0,0,0.2);
+    }
+
+
+
+    h1{
+      text-align:center;
+      color:white;
+      margin-bottom:25px;
+      font-size:32px;
+    }
+
+    .task-input{
+      display:flex;
+      gap:10px;
+      margin-bottom:25px;
+    }
+
+    .task-input input{
+      flex:1;
+      padding:14px;
+      border:none;
+      border-radius:15px;
+      outline:none;
+      font-size:16px;
+      background:white;
+    }
+
+    .task-input button{
+      width:55px;
+      border:none;
+      border-radius:15px;
+      background:#00c896;
+      color:white;
+      font-size:22px;
+      cursor:pointer;
+      transition:0.3s;
+    }
+
+    .task-input button:hover{
+      transform:scale(1.05);
+      background:#00a67e;
+    }
+
+    ul{
+      list-style:none;
+    }
+
+    li{
+      background:white;
+      margin-bottom:15px;
+      padding:15px 18px;
+      border-radius:18px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      transition:0.3s;
+      animation:fadeIn 0.3s ease;
+    }
+
+    li:hover{
+      transform:translateY(-2px);
+      box-shadow:0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .task-text{
+      font-size:17px;
+      color:#333;
+      word-break:break-word;
+      width:75%;
+    }
+
+    li.completed .task-text{
+      text-decoration:line-through;
+      color:gray;
+      opacity:0.7;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+    }
+
+    .actions button{
+      border:none;
+      width:40px;
+      height:40px;
+      border-radius:12px;
+      cursor:pointer;
+      color:white;
+      font-size:16px;
+      transition:0.3s;
+    }
+
+    .complete-btn{
+      background:#28c76f;
+    }
+
+    .delete-btn{
+      background:#ea5455;
+    }
+
+    .actions button:hover{
+      transform:scale(1.1);
+    }
+
+    @keyframes fadeIn{
+      from{
+        opacity:0;
+        transform:translateY(10px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+
+    .empty-message{
+      text-align:center;
+      color:white;
+      margin-top:10px;
+      opacity:0.8;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1><i class="fa-solid fa-list-check"></i> Task Manager</h1>
+
+    <div class="task-input">
+      <input type="text" id="taskInput" placeholder="Enter your task...">
+      <button onclick="addTask()">
+        <i class="fa-solid fa-plus"></i>
+      </button>
+    </div>
+
+    <ul id="taskList"></ul>
+
+    <p class="empty-message" id="emptyMessage">
+      No tasks added yet
+    </p>
+
+  </div>
+
+  <script>
+
+    const taskInput = document.getElementById("taskInput");
+    const taskList = document.getElementById("taskList");
+    const emptyMessage = document.getElementById("emptyMessage");
+
+    function addTask(){
+
+      const taskText = taskInput.value.trim();
+
+      if(taskText === ""){
+        alert("Please enter a task");
+        return;
+      }
+
+      const li = document.createElement("li");
+
+      li.innerHTML = `
+        <span class="task-text">${taskText}</span>
+
+        <div class="actions">
+
+          <button class="complete-btn"
+            onclick="toggleComplete(this)">
+            <i class="fa-solid fa-check"></i>
+          </button>
+
+          <button class="delete-btn"
+            onclick="deleteTask(this)">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+
+        </div>
+      `;
+
+      taskList.appendChild(li);
+
+      taskInput.value = "";
+
+      updateEmptyMessage();
+    }
+
+    function toggleComplete(button){
+      const li = button.parentElement.parentElement;
+      li.classList.toggle("completed");
+    }
+
+    function deleteTask(button){
+      const li = button.parentElement.parentElement;
+
+      li.style.transform = "translateX(100px)";
+      li.style.opacity = "0";
+
+      setTimeout(() => {
+        li.remove();
+        updateEmptyMessage();
+      }, 300);
+    }
+
+    function updateEmptyMessage(){
+      if(taskList.children.length === 0){
+        emptyMessage.style.display = "block";
+      }
+      else{
+        emptyMessage.style.display = "none";
+      }
+    }
+    taskInput.addEventListener("keypress", function(e){
+      if(e.key === "Enter"){
+        addTask();
+      }
+    });
+
+  </script>
+
+</body>
+</html>
